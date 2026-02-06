@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⏱️ Time Master</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c63ff;
+            --primary-light: #8e85ff;
+            --danger: #ff6b6b;
+            --success: #51cf66;
+            --warning: #ffd43b;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #2b2d42;
+            --text-light: #6c757d;
+            --border: #e9ecef;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 0 auto 25px;
+            background: #f1f3f5;
+            padding: 6px;
+            border-radius: 50px;
+            max-width: 350px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+        }
+        .tab-btn i {
+            font-size: 1.1rem;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .time-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 20px 0;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        .btn-secondary {
+            background: #f1f3f9;
+            color: var(--text);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .lap-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 20px 0;
+            padding-right: 10px;
+        }
+        .lap-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+        .no-laps {
+            text-align: center;
+            color: var(--text-light);
+            padding: 15px;
+            font-style: italic;
+        }
+        .clear-laps {
+            width: 100%;
+            background: #f1f3f9;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .clear-laps:hover {
+            background: #e9ecef;
+        }
+        /* Clock Styles */
+        .clock-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .clock-face {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 auto 20px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border: 8px solid #f1f3f9;
+        }
+        .hand {
+            position: absolute;
+            transform-origin: 50% 100%;
+            bottom: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .hour-hand {
+            width: 6px;
+            height: 50px;
+            background: #333;
+            border-radius: 4px;
+        }
+        .minute-hand {
+            width: 4px;
+            height: 70px;
+            background: #666;
+            border-radius: 4px;
+        }
+        .second-hand {
+            width: 2px;
+            height: 80px;
+            background: var(--danger);
+            border-radius: 4px;
+        }
+        .center-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        .digital-time {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .date {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+        .timezone {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        .timezone-selector {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .timezone-dropdown {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            background: white;
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 250px;
+        }
+        .timezone-dropdown:hover {
+            border-color: var(--primary);
+        }
+        /* Alarm Styles */
+        .alarm-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #alarm-time {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        .alarm-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .alarm-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .alarm-time {
+            font-weight: 600;
+        }
+        .delete-alarm {
+            background: #ffebee;
+            color: var(--danger);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .delete-alarm:hover {
+            background: #ffcdd2;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @media (max-width: 600px) {
+            .time-display {
+                font-size: 2.5rem;
+            }
+            .buttons {
+                gap: 8px;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            .clock-face {
+                width: 180px;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-clock"></i> Time Master</h1>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="stopwatch"><i class="fas fa-stopwatch"></i> Stopwatch</button>
+            <button class="tab-btn" data-tab="clock"><i class="far fa-clock"></i> Clock</button>
+            <button class="tab-btn" data-tab="alarm"><i class="far fa-bell"></i> Alarm</button>
+        </div>
+
+        <!-- Stopwatch Tab -->
+        <div id="stopwatch" class="tab-content active">
+            <div class="time-display" id="stopwatch-display">00:00.00</div>
+            <div class="buttons">
+                <button id="start-stop" class="btn-success"><i class="fas fa-play"></i> Start</button>
+                <button id="lap" class="btn-secondary" disabled><i class="fas fa-flag"></i> Lap</button>
+                <button id="reset" class="btn-danger" disabled><i class="fas fa-redo"></i> Reset</button>
+            </div>
+            <div class="lap-list" id="lap-list">
+                <div class="no-laps">No laps recorded yet</div>
+            </div>
+            <button id="clear-laps" class="clear-laps" style="display: none;">
+                <i class="fas fa-trash-alt"></i> Clear All Laps
+            </button>
+        </div>
+
+        <!-- Clock Tab -->
+        <div id="clock" class="tab-content">
+            <div class="timezone-selector">
+                <select id="timezone-select" class="timezone-dropdown">
+                    <option value="local">Local Time</option>
+                    <option value="Asia/Kolkata">India (IST, UTC+5:30)</option>
+                    <option value="America/New_York">New York (EST, UTC-5)</option>
+                    <option value="Europe/London">London (GMT, UTC+0)</option>
+                    <option value="Asia/Tokyo">Tokyo (JST, UTC+9)</option>
+                    <option value="Australia/Sydney">Sydney (AEST, UTC+10)</option>
+                    <option value="America/Los_Angeles">Los Angeles (PST, UTC-8)</option>
+                </select>
+            </div>
+            <div class="clock-container">
+                <div class="clock-face">
+                    <div class="hand hour-hand"></div>
+                    <div class="hand minute-hand"></div>
+                    <div class="hand second-hand"></div>
+                    <div class="center-dot"></div>
+                </div>
+                <div class="digital-time" id="digital-time">--:-- <span class="ampm">--</span></div>
+                <div class="date" id="date-display">-- ---, ----</div>
+                <div class="timezone" id="timezone-display">Local Time</div>
+            </div>
+            <div class="time-display" id="clock-display">--:--:--</div>
+        </div>
+
+        <!-- Alarm Tab -->
+        <div id="alarm" class="tab-content">
+            <div class="alarm-form">
+                <input type="time" id="alarm-time" class="form-control">
+                <button id="set-alarm" class="btn-primary"><i class="fas fa-plus"></i> Add</button>
+            </div>
+            <div class="alarm-list" id="alarm-list">
+                <div class="no-laps">No alarms set</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
