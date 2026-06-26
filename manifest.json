@@ -1,0 +1,17 @@
+{
+  "name": "Time Master",
+  "short_name": "Time Master",
+  "description": "A modern productivity dashboard for tasks, habits, notes, clocks, alarms, and focus tools.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#eef2ff",
+  "theme_color": "#6d5dfc",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

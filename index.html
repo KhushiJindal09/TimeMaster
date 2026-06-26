@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#6d5dfc">
+  <meta name="description" content="Time Master is a modern productivity dashboard with tasks, habits, notes, stopwatch, clock, alarms, and focus tools.">
+  <title>Time Master - Productivity App</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar glass-panel">
+      <a class="brand" href="#dashboard" aria-label="Time Master dashboard">
+        <span class="brand-mark">TM</span>
+        <span>
+          <strong>Time Master</strong>
+          <small>Productivity OS</small>
+        </span>
+      </a>
+
+      <nav class="nav-list" aria-label="Primary navigation">
+        <button class="nav-btn active" data-page="dashboard">Dashboard</button>
+        <button class="nav-btn" data-page="tasks">Tasks</button>
+        <button class="nav-btn" data-page="habits">Habits</button>
+        <button class="nav-btn" data-page="notes">Notes</button>
+        <button class="nav-btn" data-page="stopwatch">Stopwatch</button>
+        <button class="nav-btn" data-page="clock">Clock</button>
+        <button class="nav-btn" data-page="alarms">Alarms</button>
+        <button class="nav-btn" data-page="pomodoro">Pomodoro</button>
+        <button class="nav-btn" data-page="data">Data</button>
+      </nav>
+
+      <div class="sidebar-card">
+        <small>Level</small>
+        <strong id="level-label">Starter</strong>
+        <div class="mini-progress"><span id="xp-bar"></span></div>
+        <small><span id="xp-points">0</span> XP earned</small>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar glass-panel">
+        <button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">Menu</button>
+        <div>
+          <p class="eyebrow">Today</p>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <select id="accent-select" class="select compact" aria-label="Accent color">
+            <option value="#6d5dfc">Violet</option>
+            <option value="#0ea5e9">Sky</option>
+            <option value="#10b981">Emerald</option>
+            <option value="#f97316">Orange</option>
+            <option value="#e11d48">Rose</option>
+          </select>
+          <button class="btn ghost" id="theme-toggle">Dark</button>
+          <button class="btn primary" id="install-app" hidden>Install</button>
+        </div>
+      </header>
+
+<section class="page active" id="dashboard">
+         <div class="hero-grid">
+           <article class="greeting-card glass-panel">
+             <div class="avatar" aria-hidden="true">TM</div>
+             <div>
+               <p class="eyebrow" id="greeting-text">Good Morning</p>
+               <h2>Ready to make today count?</h2>
+             </div>
+           </article>
+           <article class="weather-card glass-panel">
+             <span class="date-icon"></span>
+             <div>
+               <p class="eyebrow">Current Date</p>
+               <p id="current-date">Thursday, Jun 11</p>
+               <p class="eyebrow" style="margin-top: 12px;">Current Time</p>
+               <p id="dashboard-time" style="font-size: 1.8rem; font-weight: 850;">00:00</p>
+             </div>
+           </article>
+         </div>
+
+         <div class="metric-grid">
+           <article class="metric-card glass-panel">
+             <small>Tasks</small>
+             <strong id="active-tasks">0</strong>
+             <span class="metric-chip" id="task-summary">Ready when you are</span>
+           </article>
+           <article class="metric-card glass-panel">
+             <small>Habits</small>
+             <strong id="active-habits">0</strong>
+             <span class="metric-chip" id="habit-summary">Build the streak</span>
+           </article>
+           <article class="metric-card glass-panel">
+             <small>Alarms Today</small>
+             <strong id="active-alarms">0</strong>
+             <span class="metric-chip">Reminders set</span>
+           </article>
+           <article class="metric-card glass-panel">
+             <small>Notes</small>
+             <strong id="active-notes">0</strong>
+             <span class="metric-chip" id="note-summary">Ideas captured</span>
+           </article>
+         </div>
+
+         <div class="content-grid">
+           <article class="glass-panel section-card">
+             <div class="section-header">
+               <div>
+                 <p class="eyebrow">Activity</p>
+                 <h3>Recent Timeline</h3>
+               </div>
+             </div>
+             <div class="timeline" id="activity-list"></div>
+           </article>
+           <article class="glass-panel section-card">
+             <div class="section-header">
+               <h2>Progress</h2>
+             </div>
+             <div class="ring small-ring" id="daily-progress-ring" style="--value:0">
+               <span id="daily-progress-text">0%</span>
+             </div>
+             <div class="stat-stack" style="margin-top: 12px;">
+               <p>Habits: <strong id="progress-habits">0%</strong></p>
+               <p>Tasks: <strong id="progress-tasks">0%</strong></p>
+             </div>
+           </article>
+         </div>
+       </section>
+
+      <section class="page" id="tasks">
+        <div class="content-grid two-column">
+          <form class="glass-panel section-card form-card" id="task-form">
+            <h2>Task Manager</h2>
+            <input class="input" id="task-title" placeholder="Task name" required>
+            <div class="form-row">
+              <select class="select" id="task-priority">
+                <option>High</option>
+                <option selected>Medium</option>
+                <option>Low</option>
+              </select>
+              <input class="input" id="task-due" type="date">
+            </div>
+            <button class="btn primary" type="submit">Add Task</button>
+          </form>
+          <article class="glass-panel section-card">
+            <div class="section-header">
+              <h2>Progress</h2>
+              <strong id="task-progress-label">0%</strong>
+            </div>
+            <div class="progress-track"><span id="task-progress"></span></div>
+            <div class="task-list" id="task-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="habits">
+        <div class="content-grid two-column">
+          <form class="glass-panel section-card form-card" id="habit-form">
+            <h2>Habit Tracker</h2>
+            <input class="input" id="habit-title" placeholder="Daily habit" required>
+            <label>Reminder time <input class="input" id="habit-reminder" type="time" required></label>
+            <button class="btn primary" type="submit">Add Habit</button>
+            <p class="muted">Tap a habit each day to build a streak.</p>
+          </form>
+          <article class="glass-panel section-card">
+            <div class="section-header">
+              <h2>Daily Habits</h2>
+              <strong id="habit-percent">0%</strong>
+            </div>
+            <div class="habit-list" id="habit-list"></div>
+          </article>
+        </div>
+        <div class="content-grid two-column">
+          <article class="glass-panel section-card">
+            <h2>Calendar View</h2>
+            <div class="calendar-grid" id="habit-calendar"></div>
+          </article>
+          <article class="glass-panel section-card">
+            <h2>Habit Statistics</h2>
+            <div class="stat-stack">
+              <p>Weekly completions: <strong id="habit-weekly">0</strong></p>
+              <p>Monthly completions: <strong id="habit-monthly">0</strong></p>
+              <p>Best streak: <strong id="habit-best-streak">0 days</strong></p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="notes">
+        <div class="content-grid two-column">
+          <article class="glass-panel section-card form-card">
+            <h2>Quick Notes</h2>
+            <input class="input" id="note-title" placeholder="Note title">
+            <div class="toolbar">
+              <button class="btn small ghost" data-command="bold">Bold</button>
+              <button class="btn small ghost" data-command="italic">Italic</button>
+              <button class="btn small ghost" data-command="insertUnorderedList">List</button>
+            </div>
+            <div class="editor" id="note-editor" contenteditable="true" aria-label="Note body"></div>
+            <div class="button-row">
+              <button class="btn primary" id="save-note">Save Note</button>
+              <button class="btn ghost" id="new-note">New Note</button>
+            </div>
+            <small class="muted" id="note-save-status">Auto-save is ready</small>
+          </article>
+          <article class="glass-panel section-card">
+            <div class="section-header">
+              <h2>Notes</h2>
+              <input class="input compact-input" id="note-search" placeholder="Search">
+            </div>
+            <div class="note-list" id="note-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="stopwatch">
+        <article class="glass-panel section-card center-card">
+          <div class="ring timer-ring" id="stopwatch-ring" style="--value:0">
+            <span id="stopwatch-display">00:00:00.00</span>
+          </div>
+          <div class="button-row">
+            <button class="btn primary" id="sw-start">Start</button>
+            <button class="btn ghost" id="sw-lap">Lap</button>
+            <button class="btn danger" id="sw-reset">Reset</button>
+          </div>
+        </article>
+        <div class="content-grid two-column">
+          <article class="glass-panel section-card">
+            <h2>Lap Statistics</h2>
+            <div class="stat-stack">
+              <p>Fastest lap: <strong class="success" id="lap-fastest">--</strong></p>
+              <p>Slowest lap: <strong class="danger-text" id="lap-slowest">--</strong></p>
+              <p>Average lap: <strong id="lap-average">--</strong></p>
+              <p>Total laps: <strong id="lap-count">0</strong></p>
+            </div>
+            <div class="button-row">
+              <button class="btn ghost" id="export-csv">CSV</button>
+              <button class="btn ghost" id="export-pdf">PDF</button>
+            </div>
+          </article>
+          <article class="glass-panel section-card">
+            <h2>Lap History</h2>
+            <div class="lap-list" id="lap-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="clock">
+        <div class="content-grid two-column">
+          <article class="glass-panel section-card center-card">
+            <div class="analog-clock" aria-label="Analog clock">
+              <span class="clock-hand hour" id="hour-hand"></span>
+              <span class="clock-hand minute" id="minute-hand"></span>
+              <span class="clock-hand second" id="second-hand"></span>
+              <span class="clock-dot"></span>
+            </div>
+            <h2 id="digital-clock">00:00:00</h2>
+            <p id="clock-date">Today</p>
+            <span class="day-pill" id="day-night">Day</span>
+          </article>
+          <article class="glass-panel section-card">
+            <h2>World Clocks</h2>
+            <input class="input" id="timezone-search" placeholder="Search timezone">
+            <select class="select" id="timezone-select"></select>
+            <button class="btn primary" id="add-clock">Add Clock</button>
+<div class="world-list" id="world-list"></div>
+           </article>
+         </div>
+       </section>
+
+       <section class="page" id="alarms">
+         <div class="content-grid two-column">
+          <form class="glass-panel section-card form-card alarm-form-card" id="alarm-form">
+             <h2>Create Alarm</h2>
+             <p class="muted alarm-form-lead">Set a time with the spinners below.</p>
+             <input id="alarm-time" type="hidden" required>
+             <div class="time-picker spinner-time-picker" aria-label="Alarm time picker" data-picker="spinner">
+               <div class="spinner-picker" id="alarm-spinner-picker">
+                 <div class="spinner-column" data-spinner="hour">
+                   <span class="spinner-label">Hour</span>
+                   <button type="button" class="spinner-btn spinner-up" data-spinner-dir="up" aria-label="Increase hour">▲</button>
+                   <div class="spinner-value" id="picker-hour" tabindex="0" role="spinbutton" aria-label="Hour" aria-valuemin="1" aria-valuemax="12" aria-valuenow="7">7</div>
+                   <button type="button" class="spinner-btn spinner-down" data-spinner-dir="down" aria-label="Decrease hour">▼</button>
+                 </div>
+                 <span class="spinner-separator" aria-hidden="true">:</span>
+                 <div class="spinner-column" data-spinner="minute">
+                   <span class="spinner-label">Minute</span>
+                   <button type="button" class="spinner-btn spinner-up" data-spinner-dir="up" aria-label="Increase minute">▲</button>
+                   <div class="spinner-value" id="picker-minute" tabindex="0" role="spinbutton" aria-label="Minute" aria-valuemin="0" aria-valuemax="59" aria-valuenow="0">00</div>
+                   <button type="button" class="spinner-btn spinner-down" data-spinner-dir="down" aria-label="Decrease minute">▼</button>
+                 </div>
+                 <div class="ampm-segmented" role="group" aria-label="AM or PM">
+                   <button type="button" class="active" data-ampm="AM">AM</button>
+                   <button type="button" data-ampm="PM">PM</button>
+                 </div>
+               </div>
+             </div>
+             <div class="button-row alarm-form-actions">
+               <button class="btn primary" type="submit">Create Alarm</button>
+             </div>
+           </form>
+           <article class="glass-panel section-card alarm-list-card">
+             <div class="section-header">
+               <h2>Today's Alarms</h2>
+             </div>
+             <div class="alarm-list" id="alarm-list"></div>
+           </article>
+         </div>
+       </section>
+
+      <section class="page" id="pomodoro">
+        <div class="content-grid two-column">
+          <article class="glass-panel section-card center-card" id="focus-card">
+            <div class="ring timer-ring" id="pomo-ring" style="--value:100">
+              <span id="pomo-display">25:00</span>
+            </div>
+            <div class="button-row">
+              <button class="btn primary" id="pomo-start">Start</button>
+              <button class="btn ghost" id="pomo-reset">Reset</button>
+              <button class="btn ghost" id="fullscreen-focus">Full Screen</button>
+            </div>
+          </article>
+          <article class="glass-panel section-card form-card">
+            <h2>Premium Pomodoro</h2>
+            <div class="form-row">
+              <label>Focus <input class="input" id="focus-minutes" type="number" min="1" value="25"></label>
+              <label>Break <input class="input" id="break-minutes" type="number" min="1" value="5"></label>
+            </div>
+            <label>Daily goal <input class="input" id="daily-goal" type="number" min="1" value="120"></label>
+            <select class="select" id="ambient-sound">
+              <option value="none">No ambient sound</option>
+              <option value="rain">Rain</option>
+              <option value="forest">Forest</option>
+              <option value="ocean">Ocean</option>
+              <option value="cafe">Cafe</option>
+            </select>
+            <div class="timeline" id="session-history"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="data">
+        <article class="glass-panel section-card form-card">
+          <h2>Data Backup</h2>
+          <div class="button-row">
+            <button class="btn primary" id="export-json">Export JSON</button>
+            <label class="btn ghost file-btn">Import Backup <input id="import-json" type="file" accept="application/json"></label>
+            <button class="btn danger" id="reset-data">Reset Data</button>
+          </div>
+          <p class="muted">Automatic backups are stored locally in your browser after every change.</p>
+          <pre class="backup-box" id="backup-status">No backup loaded yet.</pre>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div class="onboarding" id="onboarding">
+    <div class="glass-panel onboarding-card">
+      <p class="eyebrow">Welcome</p>
+      <h2>Build your day with Time Master</h2>
+      <p>Track focus, tasks, habits, notes, alarms, and progress from one calm dashboard.</p>
+      <button class="btn primary" id="start-onboarding">Get Started</button>
+    </div>
+  </div>
+
+<div class="alarm-modal" id="alarm-modal" hidden>
+     <div class="glass-panel alarm-modal-card">
+       <p class="eyebrow">Alarm</p>
+       <h2 id="ringing-label">Wake Up!</h2>
+       <div class="alarm-time-display" id="alarm-current-time">--:--</div>
+       <div class="alarm-modal-actions">
+         <button class="btn ghost" id="snooze-5">Snooze 5 Min</button>
+         <button class="btn primary" id="stop-alarm">Stop Alarm</button>
+       </div>
+     </div>
+   </div>
+
+  <script src="script.js?v=3"></script>
+</body>
+</html>
